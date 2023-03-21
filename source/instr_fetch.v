@@ -7,8 +7,8 @@
 module instr_fetch(
   input clk,                                // Clock signal
   input reset,                              // Reset signal
-  input [31:0] pc;                          // Program Counter
-  input [31:0] instruction_memory [255:0];  // Instruction_memory
+  input [31:0] pc,                          // Program Counter
+  input [31:0][255:0]  instruction_memory,  // Instruction_memory
   output reg [31:0] ir                      // Instruction Register
 );
 
