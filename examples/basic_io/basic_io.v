@@ -1,4 +1,6 @@
-module processor_test();
+`include "../../source/processor.v"
+
+module basic_io_test();
     // Program in form of Instructions loaded into the Instruction Memory
 
     // Instantiate the Processor Module
