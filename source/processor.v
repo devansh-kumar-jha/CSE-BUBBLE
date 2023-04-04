@@ -147,7 +147,7 @@ module processor(clk,reset,instr,data,signal,final);
     
     /// This is the top module of control for all Airthmetic Logic Operations in the Processor. This module instantiates
     /// the other sub-modules for various ALU tasks. It works on the processor registers only.
-    // alu_top alu(clk,reset,instr_ID,data);
+    alu_top alu(clk,reset,process[5],instr_ID,data,data);
 
     /// This is the top module of control for all Data Transfer Operations in the Processor. This module instantiates the
     /// other data loading and storing modules. This works on both data memory and processor registers.
@@ -155,7 +155,7 @@ module processor(clk,reset,instr,data,signal,final);
     
     /// This is the top module of control for all Branching Operations in the Processor. This module instantiates the
     /// other branching related modules. This works on both instruction memory and processor registers.
-    // branch_top branch(clk,reset,process[0],instr_ID,data);
+    branch_top branch(clk,reset,process[0],process[5],instr_ID,process[0]);
     
     /// This is the top module for implementation of all system instructions which are the special processor instructions
     /// independent of the R, I and J type classification.
