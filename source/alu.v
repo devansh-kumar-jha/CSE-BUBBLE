@@ -34,6 +34,7 @@ module add(instr_ID,out,a,b,pc);
     always @(*) begin
         if(instr_ID == 1) begin
             out_reg <= a + b;
+            pc_reg=pc+4;
         end
     end
 
@@ -52,6 +53,7 @@ module sub(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 2) begin
             out_reg <= a - b;
+            pc_reg=pc+4;
         end
     end
 
@@ -70,6 +72,7 @@ module addu(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 3) begin
             out_reg <= a + b;
+            pc_reg=pc+4;
         end
     end
 
@@ -88,6 +91,7 @@ module subu(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 4) begin
             out_reg <= a - b;
+            pc_reg=pc+4;
         end
     end
 
@@ -106,6 +110,7 @@ module addi(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 5) begin
             out_reg <= a + b;
+            pc_reg=pc+4;
         end
     end
 
@@ -124,6 +129,7 @@ module addiu(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 6) begin
             out_reg <= a + b;
+            pc_reg=pc+4;
         end
     end
 
@@ -142,6 +148,7 @@ module and(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 7) begin
             out_reg <= a & b;
+            pc_reg=pc+4;
         end
     end
 
@@ -160,6 +167,7 @@ module or(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 8) begin
             out_reg <= a | b;
+            pc_reg=pc+4;
         end
     end
 
@@ -178,6 +186,7 @@ module andi(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 9) begin
             out_reg <= a & b;
+            pc_reg=pc+4;
         end
     end
 
@@ -196,6 +205,7 @@ module ori(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 10) begin
             out_reg <= a | b;
+            pc_reg=pc+4;
         end
     end
 
@@ -214,6 +224,7 @@ module sll(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 11) begin
             out_reg <= a << b;
+            pc_reg=pc+4;
         end
     end
 
@@ -232,6 +243,7 @@ module srl(instr_ID,out,a,b.pc);
     always @(*) begin
         if(instr_ID == 12) begin
             out_reg <= a >> b;
+            pc_reg=pc+4;
         end
     end
 
