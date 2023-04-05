@@ -9,23 +9,32 @@
 /// This will be a combinational logic.
 module alu_top(instr_ID,rs,rt,rd,initial_pc,pc);
     input [31:0] instr_ID; // Instruction Register and Instruction ID for working of ALU
-    input [31:0] rs,rt,initial_pc; // Register for data input
-    output [31:0] rd,pc;
+    input [31:0] rs,rt,initial_pc; // rt destination for R-type, constant for I-type
+    output [31:0] rd,pc; 
 
-    // reg [31:0] check;
-    // wire [4:0] r0,r1,r2;
-    // assign r1 = ir[25:21];
-    // assign r2 = ir[20:16];
-    // assign r0 = ir[15:11];
+    case(instr_ID)
+        1: assign rd= rs + rt;
+        2: assign rd= rs - rt;
+        3: assign rd= rs + rt;
+        4: assign rd= rs - rt;
+        5: assign rd= rs + rt;
+        6: assign rd= rs + rt;
+        7: assign rd= rs & rt;
+        8: assign rd= rs | rt;
+        9: assign rd= rs & rt;
+        10: assign rd= rs | rt;
+        11: assign rd= rs<<rt;
+        12: assign rd= rs>>rt;
+        24: assign rd= rs<rt;
+        25: assign rd= rs>rt;
+        default;
+    endcase
     
-    // add m1(instr_ID,check[r0],check[r1],check[r2]);
+    assign  pc = initial_pc+4;
 
-    // always @(*) begin
-    //     check <= data_in;
-    // end
-
-    // assign data_out <= check;
 endmodule
+
+
 
 // module add(instr_ID,out,a,b,pc);
 //     input [31:0] instr_ID,a,b;
