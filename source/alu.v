@@ -23,10 +23,12 @@ module alu_top(clk,reset,ir,instr_ID,data_in,data_out);
     assign data_out <= check;
 endmodule
 
-module add(instr_ID,out,a,b);
+module add(instr_ID,out,a,b,pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -36,12 +38,15 @@ module add(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module sub(instr_ID,out,a,b);
+module sub(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -51,12 +56,15 @@ module sub(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module addu(instr_ID,out,a,b);
+module addu(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -66,12 +74,15 @@ module addu(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module subu(instr_ID,out,a,b);
+module subu(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -81,12 +92,15 @@ module subu(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module addi(instr_ID,out,a,b);
+module addi(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -96,12 +110,15 @@ module addi(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module addiu(instr_ID,out,a,b);
+module addiu(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -111,12 +128,15 @@ module addiu(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module and(instr_ID,out,a,b);
+module and(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -126,12 +146,15 @@ module and(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module or(instr_ID,out,a,b);
+module or(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -141,12 +164,15 @@ module or(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module andi(instr_ID,out,a,b);
+module andi(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -156,12 +182,15 @@ module andi(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module ori(instr_ID,out,a,b);
+module ori(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -171,12 +200,15 @@ module ori(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module sll(instr_ID,out,a,b);
+module sll(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -186,12 +218,15 @@ module sll(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
 
-module srl(instr_ID,out,a,b);
+module srl(instr_ID,out,a,b.pc);
     input [31:0] instr_ID,a,b;
     output [31:0] out;
+    output [31:0] pc;
 
+    reg [31:0] pc_reg;
     reg [31:0] out_reg;
 
     always @(*) begin
@@ -201,4 +236,5 @@ module srl(instr_ID,out,a,b);
     end
 
     assign out = out_reg;
+    assign pc=pc_reg;
 endmodule
