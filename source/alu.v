@@ -1,14 +1,18 @@
 // This file will run the Airthmetic Logic Unit of the processor.
 // This contains various modules which can be used as required and take the required amount of
 // information from the processor and output the computed value in the output wire which is used by the processor.
+// All the functions here are synchronized at the clk signal.
 
+// This the top module of ALU which will inturn divide the signal among various modules
+// present in the ALU scheme and then select the required output generated from each of the ALU modules and give it back to
+// the processor for further usage.
 module alu_top(clk,reset,ir,instr_ID,data_in,data_out);
-    input clk,reset;
-    input [31:0] ir,instr_ID;
-    output [31:0] data_in[0:255];
-    output [31:0] data_out[0:255];
+    input clk,reset; // Clock and reset signals for the working of processor
+    input [31:0] ir,instr_ID; // Instruction Register and Instruction ID for working of ALU
+    output [31:0] data_in; // Register for data input
+    output [31:0] data_out;
 
-    reg [31:0] check[0:255];
+    reg [31:0] check;
     wire [4:0] r0,r1,r2;
     assign r1 = ir[25:21];
     assign r2 = ir[20:16];

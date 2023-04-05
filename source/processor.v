@@ -5,41 +5,38 @@
 `include "branching.v"
 `include "system.v"
 
-module processor_top(clk,reset,instruct,data,signal,final);
+module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     //! STEP 1 -- DEFINING INPUTS AND OUTPUTS OF THE MODULE
-    // clk - The synchronizing clock for all process of the machine.
-    // reset - An intial signal will be passed for very short time which will be used to reset all processor to starting state.
-    // instruct - Instruction to be fed in the instruction memory
-    // data - Data to be fed in the Data Memory
-    // signal - Will be set to 1 upon termination of the program, will be zero initially
-    // final - The final value where the program terminates, here the signal will be set signalling that the program is over
+    /// clk - The synchronizing clock for all process of the machine.
+    /// reset - An intial signal will be passed for very short time which will be used to reset the whole machine into its initial state.
+    /// start_signal - A signal sent by the processor which means that now the memory elements have all been sent and now the execution
+    ///                of the program can start.
+    /// new_instruction - Till the start signal is 0 the New Instruction or New Data to be fed in the respective memory is in this register.
+    /// add_into - Which memory will the data be fed into in case start signal is still 0.
+    /// end_signal - Will be set to 1 upon termination of the program, will be zero initially
     input clk,reset;
-    input [31:0] instruct[0:255];
-    input [31:0] data[0:255];
-    input [31:0] final;
-    output signal;
-    wire clk,reset,signal,instruct,data,final; 
+    input start_signal,add_into;
+    input [31:0] new_instruction;
+    output end_signal;
+    wire clk,reset,start_signal,end_signal,new_instruction,add_into; 
 
     //! STEP 2 -- INTERFACING OF INSTRUCTION MEMORY AND DATA MEMORY BEFORE STARTING THE PROCESSOR
-    
-    //! STEP 3 -- INSTANTIATING THE PROCESSOR FOR EXECUTION
-
-    //! STEP 4 -- END THE PROGRAM
-
-endmodule
-
-module processor(clk,reset,instr,data,signal,final);
-    //! STEP 1 -- DEFINING INPUTS AND OUTPUTS OF THE MODULE
-    input clk,reset;
+    /// We have to first execute the memory loading phase where the data memory and instruction memory is fed into the program.
+    /// Till the start_signal is 0 we have to ensure that the end_signal remains 0 and all other processes within the processor
+    /// do not create any hindrance to the process of loading into the memory.
     /// Instruction memory which will be used by the processor is defined in the wire matrix below.
     /// The instruction memory has a size of 32 bits * 256 registers
-    input [31:0] instr[0:255];
+    reg [31:0] instr[0:255];
+    instr_memory inst();
     /// Data memory which will be used by the processor is defined in the wire matrix below
     /// The data memory has a size of 32 bits * 256 registers
-    input [31:0] data[0:255];
-    input [31:0] final;
-    output signal;
-    wire clk,reset,signal,instr,data,final; 
+    reg [31:0] data[0:255];
+    data_memory dat();
+    /// This will be used to store the last instruction enterred in the program. This will facilitate the
+    /// ending of processor when required.
+    reg [31:0] final;
+    
+    //! STEP 3 -- INSTANTIATING THE PROCESSOR FOR EXECUTION
     
     //! STEP 2 -- DEFINING THE GENERAL PURPOSE AND OTHER REGISTERS/WIRES INSIDE THE PROCESSOR
     /// process - Total 32 registers inside the processor each of 32 width stored under the process matrix
@@ -163,10 +160,10 @@ module processor(clk,reset,instr,data,signal,final);
 
     //! STEP 7 -- INCREMENT THE PC UPON POSEDGE OF CLOCK FOR READING THE NEXT INSTRUCTION
 
-    //! STEP 8 -- MAKE THE OUTPUT "SIGNAL" = 1 TO SIGNAL THE CALLING TEST BENCH THAT THE PROGRAM EXECUTION IS FINISHED
+    //! STEP 8 -- END THE PROGRAM
     // When the PC becomes equal to final instruction location than the signal will be set.
     // When the signal is set the processor does not allow the Program Counter to move further and waits for the top-module to finish
     // The execution of the program.
-    assign signal = (process[0] == final) ? 1'b1 : 1'b0;
+    assign end_signal = (process[0] == final) ? 1'b1 : 1'b0;
 
 endmodule
