@@ -1,9 +1,9 @@
-`include "instr_fetch.v"
 `include "instr_decode.v"
 `include "alu.v"
 `include "transfer.v"
 `include "branching.v"
 `include "system.v"
+`include "memory.v"
 
 module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     //! STEP 0 -- FSM DESCRIPTION OF THE PROCESSOR
@@ -75,7 +75,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     // Register 16 - ra - Return Address - Will Store the address of the instruction where we have to return after function exits
     // Register (17-23) - (t0-t6) - Temprorary Registers - Will be used to store values just required temprorarily
     // Register (24-31) - (s0-s7) - Stored Registers - Will be used to store values required over multiple functions or modules
-    reg [31:0] process[0:31]
+    reg [31:0] process[0:31];
     
     
     //! STEP 3 -- INTERFACING OF INSTRUCTION MEMORY AND DATA MEMORY AND LOADING THE PROGRAM BEFORE STARTING THE PROCESSOR
@@ -169,8 +169,8 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     /// The instr_decode module will be used to decode the instruction currently present in the IR register.
     /// The instructions are encoded within the following categories broadly -
     /// R type Instructions (32 bits) = Opcode (6 bits)[31:26] + Argument 1 (5 bits)[25:21] + Argument 2 (5 bits)[20:16]
-    ///                                  + Destination (5 bits)[15:11] + Shift Amount (5 bits)[10:6] + Function (6 bits)[5:0]
-    /// I type Instructions (32 bits) = Opcode (6 bits)[31:26] + Argument 1 (5 bits)[25:21] + Argument 3 (5 bits)[20:16]
+    ///                                  + Destination (Argument 3) (5 bits)[15:11] + Shift Amount (5 bits)[10:6] + Function (6 bits)[5:0]
+    /// I type Instructions (32 bits) = Opcode (6 bits)[31:26] + Argument 1 (5 bits)[25:21] + Destination (Argument 3) (5 bits)[20:16]
     ///                                + Constant (Argument 2) (16 bits)[15:0]
     /// J type Instructions (32 bits) = Opcode (6 bits)[31:26] + Constant (Argument 1) (26 bits)[25:0]
     /// The ISA CSE-BUBBLE Implements the following 25 Instructions which are explained below -
@@ -214,8 +214,8 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     
     /// Other Special System Instructions
     // 26: syscall          - Opcode: 21
-    // 27: display          - Opcode: 22
-    // 28: exit             - Opcode: 23
+    //      27: display     - System Call Code: 1
+    //      28: exit        - System Call Code: 2
     
     // This will denote the ID of the instruction which will be used later by the execution phase of processor.
     wire [31:0] instr_ID,rs,rt,rd;
@@ -253,7 +253,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     // This is the top module of control for all Branching Operations in the Processor. This module instantiates the
     // other branching related modules. This works on both instruction memory and processor registers.
     // It is a combinational logic.
-    branch_top branch(process[5],instr_ID,inputs[4],inputs[5],outputs[2]);
+    branch_top branch(process[5],instr_ID,inputs[4],inputs[5],inputs[8],outputs[2]);
     
     // This is the top module for implementation of all system instructions which are the special processor instructions
     // They are all independent of the R, I and J type classification.
@@ -280,7 +280,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
             else if(instr_ID < 15) begin                                   // A data transfer instruction is being executed.
                 data_write <= (instr_ID == 14) ? 1'b1 : 1'b0;              // Keep the writeEnable of data memory enabled for store word.
                 inputs[2] <= process[rs];                                  // Setup the parameter 1 of the instruction
-                inputs[3] <= process[rt];                                  // Setup the parameter 2 of the instruction
+                inputs[3] <= rt;                                           // Setup the parameter 2 of the instruction
                 if(instr_ID == 13) begin                                   // Load word execution interfacing data memory
                     data_ad_out <= outputs[1];
                     process[rd] <= data;
@@ -289,21 +289,32 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
                     data_ad_in <= outputs[1];
                     input_data <= process[rd];
                 end
+                process[0] <= process[0] + 1;
             end                  
             else if(instr_ID < 24) begin                                   // A branching instruction is being executed.
                 data_write <= 1'b0;                                        // Keep the writeEnable of data memory disabled.
-                if(instr_ID < 16) begin                                    // I type conditional branch instructions
+                inputs[8] <= process[rt];                                  // Give the jump offset also as an input
+                if(instr_ID < 21) begin                                    // I type conditional branch instructions
                     inputs[4] <= process[rs];
                     inputs[5] <= process[rd];
                 end
-                else if(instr_ID == 17) begin                              // J type unconditional jr instruction
+                else if(instr_ID == 22) begin                              // J type unconditional jr instruction
                     inputs[4] <= process[rt];
                 end
-                else begin inputs[4] <= rt; end                            // J type unconditional j or jal instruction
+                else if(instr_ID == 21) begin                              // J type unconditional j instruction
+                    inputs[4] <= rt;
+                end
+                else begin                                                 // J type unconditional jal instruction
+                    inputs[4] <= rt;
+                    process[16] <= process[0];
+                end
                 process[0] <= process[0] + 1 + outputs[2];
             end
             else begin                                                     // A system instruction is being executed.
                 data_write <= 1'b0;                                        // Keep the writeEnable of data memory disabled.
+                inputs[6] <= process[8];                                   // The v0 register store the system call number
+                inputs[7] <= process[10];                                  // The a0 register stores the value to be printed
+                process[0] <= process[0] + 1;
             end
         end
     end
