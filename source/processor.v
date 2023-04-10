@@ -1,9 +1,6 @@
-`include "instr_decode.v"
-`include "alu.v"
-`include "transfer.v"
-`include "branching.v"
-`include "system.v"
-`include "memory.v"
+//! This is the master module which will inturn call all the other modules in the source code.
+//! This module controls all the sequential execution of the processor and machine cycle execution.
+//! The module should inturn be called with including the other modules of the source in testbench.
 
 module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     //! STEP 0 -- FSM DESCRIPTION OF THE PROCESSOR
@@ -258,7 +255,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     // This is the top module for implementation of all system instructions which are the special processor instructions
     // They are all independent of the R, I and J type classification.
     // This will be a sequential logic as it can control the working of the actual Pseudo Operating Software.
-    system_top sys(clk,reset,process[5],instr_ID,inputs[6],inputs[7],outputs[3]);
+    system_top sys(process[5],instr_ID,inputs[6],inputs[7],outputs[3]);
 
     // Logic for execution phase of the Processor FSM
     always @(posedge clk) begin

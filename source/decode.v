@@ -55,11 +55,11 @@ module instr_decode (
     // ID gets the particular instruction ID and parameter outputs are set as explained above.
     always @(ir) begin
         if(opcode == 0) begin
-            id_reg <= func + 1;
+            id_reg <= {27'b0,{func+5'd1}};
             rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
         end
         else if(opcode <= 6) begin
-            id_reg <= opcode + 4;
+            id_reg <= {27'b0,{opcode+5'd4}};
             if(opcode == 3 || opcode==4) begin
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
             end
@@ -68,11 +68,11 @@ module instr_decode (
             end
         end
         else if(opcode == 7) begin
-            id_reg <= func + 11;
+            id_reg <= {27'b0,{func+5'd11}};
             rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
         end
         else begin
-            id_reg <= opcode + 5;
+            id_reg <= {27'b0,{opcode+5'd5}};
             if(opcode < 16 || opcode == 20) begin
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
             end
