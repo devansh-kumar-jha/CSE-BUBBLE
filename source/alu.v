@@ -82,7 +82,7 @@ module sub (
     input wire signed [31:0] rs,rt,
     output wire signed [31:0] rd
 );
-    assign rd = rs + rt;
+    assign rd = rs - rt;
 endmodule
 
 // Module for supporting unsigned addition operation.
@@ -129,7 +129,12 @@ module andk (
     input wire unsigned [31:0] rs,rt,
     output wire unsigned [31:0] rd
 );
-    assign rd = rs & rt;
+    genvar i;
+    generate
+        for(i=0;i<32;i=i+1) begin
+            and(rd[i],rs[i],rt[i]);
+        end
+    endgenerate
 endmodule
 
 // Module for supporting logical or operation.

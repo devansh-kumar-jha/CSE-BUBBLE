@@ -17,15 +17,16 @@ module system_top (
 );
 
     always @(ir) begin
-        if(instr_ID != 26) begin end        // Ignore for instructions which are not syscall
+        if(instr_ID != 26) begin end            // Ignore for instructions which are not syscall
         else begin
-            if(rs == 1) begin               // The instruction is for display
+            if(rs == 32'd1) begin               // The instruction is for display
                 $display(rt);
             end
-            else begin                      // The instruction is for exiting the program
+            else if(rs == 32'd2) begin          // The instruction is for exiting the program
                 #5
                 $finish;
             end
+            else begin end                      // The instruction is for a nop system call where we have to ignore the clock cycle
         end
     end
 

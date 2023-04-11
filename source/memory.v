@@ -21,6 +21,7 @@ module veda #(parameter width = 32, parameter depth = 256, parameter len = 8) (c
     reg [width-1:0] dataout;
     integer i;
 
+    // Sequential write operation at posedge of clk.
     always @(posedge reset or posedge clk) begin
         if(reset==1'b1) begin
             dataout <= 0;
@@ -30,8 +31,9 @@ module veda #(parameter width = 32, parameter depth = 256, parameter len = 8) (c
             if(writeEnable==1'b1 && mode==1'b0) begin
                 memory[address_a] = in;
             end
-            dataout = memory[address_b];
         end
     end
-    assign out = dataout;
+
+    // Combinational read operation.
+    assign out = memory[address_b];
 endmodule

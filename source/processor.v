@@ -102,7 +102,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     always @(posedge clk) begin
         if(start_signal == 1'b1) begin                      // The case when the data loading is already completed.
             instr_mode <= 1'b1;                             // Keep the instruction memory at read only now.
-            final <= instr_ad_in;
+            final <= instr_ad_in + 1;
         end
         else if(end_signal == 1'b0) begin
             instr_mode <= 1'b0; data_mode <= 1'b0;          // Keep the memories into write mode for this phase.
@@ -213,6 +213,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     // 26: syscall          - Opcode: 21
     //      27: display     - System Call Code: 1
     //      28: exit        - System Call Code: 2
+    //      29: nop         - System Call Code: 3
     
     // This will denote the ID of the instruction which will be used later by the execution phase of processor.
     wire [31:0] instr_ID,rs,rt,rd;
@@ -258,7 +259,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     system_top sys(process[5],instr_ID,inputs[6],inputs[7],outputs[3]);
 
     // Logic for execution phase of the Processor FSM
-    always @(posedge clk) begin
+    always @(negedge clk) begin
         if(start_signal == 1'b0 || end_signal == 1'b1) begin end           // When the data is loading ignore this phase.
         else if(end_signal == 1'b0) begin
             if(instr_ID < 13 || instr_ID == 24 || instr_ID == 25) begin    // An airthmetic, logical or comparison instructions executed.

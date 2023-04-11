@@ -28,6 +28,7 @@
     // 26: syscall          - Opcode: 21
     //      27: display
     //      28: exit
+    //      29: nop
 //! The 3 parameters extracted by decoding and provided to the processor work as the following
     // rs - The argument 1 of the instruction not applied for system instructions.
     // rt - The argument 2 of the instruction not applied for system or unconditional jump instructions.
@@ -54,11 +55,12 @@ module instr_decode (
     // Whenever the values under ir are changed this module will be signalled and the always block will execute.
     // ID gets the particular instruction ID and parameter outputs are set as explained above.
     always @(ir) begin
-        if(opcode == 0) begin
+        $display("The value of opcode is %b",ir);
+        if(opcode == 6'd0) begin
             id_reg <= {27'b0,{func+5'd1}};
             rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
         end
-        else if(opcode <= 6) begin
+        else if(opcode <= 6'd6) begin
             id_reg <= {27'b0,{opcode+5'd4}};
             if(opcode == 3 || opcode==4) begin
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
@@ -67,7 +69,7 @@ module instr_decode (
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
             end
         end
-        else if(opcode == 7) begin
+        else if(opcode == 6'd7) begin
             id_reg <= {27'b0,{func+5'd11}};
             rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
         end

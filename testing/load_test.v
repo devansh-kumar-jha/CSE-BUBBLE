@@ -45,19 +45,19 @@ module load_test();
         $display("The values of input and address are ",a," ",b," ",c);
         $display("The outputs are ",out);
         
-        a <= 200; b <= 10; c <= 3; mode <= 0; write <= 1;
+        a <= 200; b <= 10; c <= 3; mode <= 1; write <= 1;
         #10
         $display("The clock value is ",clk);
         $display("The values of input and address are ",a," ",b," ",c);
         $display("The outputs are ",out);
         
-        a <= 210; b <= 13; c <= 10; mode <= 0; write <= 1;
+        a <= 210; b <= 13; c <= 13; mode <= 0; write <= 1;
         #10
         $display("The clock value is ",clk);
         $display("The values of input and address are ",a," ",b," ",c);
         $display("The outputs are ",out);
         
-        a <= 201; b <= 13; c <= 10; mode <= 0; write <= 1;
+        a <= 201; b <= 13; c <= 13; mode <= 0; write <= 1;
         #10
         $display("The clock value is ",clk);
         $display("The values of input and address are ",a," ",b," ",c);
