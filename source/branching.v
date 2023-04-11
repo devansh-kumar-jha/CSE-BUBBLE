@@ -18,6 +18,7 @@
 
 /// This will be a combinational logic.
 module branch_top (
+    input wire reset,
     input wire [31:0] ir,                    // Instruction Register
     input wire [31:0] instr_ID,              // Decoded instruction ID
     input wire [31:0] rs,rt,rd,              // Input Arguments 1, 2 and 3 got from processor
@@ -40,9 +41,10 @@ module branch_top (
     jal branch8(rs,rt,rd,opt[8]);
 
     // Combinational Always block to select the correct output from the above outputs. 
-    always @(ir) begin
-        if(instr_ID >=15 && instr_ID <= 23) begin                // Presence of any Branch instruction
-            out_reg <= opt[instr_ID - 15];
+    always @(*) begin
+        if(reset == 1'b1) begin out_reg <= 1'b0; end
+        else if(instr_ID >=15 && instr_ID <= 23) begin                // Presence of any Branch instruction
+            out_reg <= opt[instr_ID - 32'd15];
         end
         else begin end                                           // Ignore this if it is not a Branch instruction
     end

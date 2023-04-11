@@ -10,13 +10,14 @@
 
 /// This is a combinational logic.
 module system_top (
+    input wire reset,
     input wire [31:0] ir,                   // Instruction Register
     input wire [31:0] instr_ID,             // Decoded instruction ID
     input wire [31:0] rs,rt,                // 2 input parameters to the system module from processor
     output wire [31:0] rd                   // 1 output parameter from system module to processor
 );
 
-    always @(ir) begin
+    always @(*) begin
         if(instr_ID != 26) begin end            // Ignore for instructions which are not syscall
         else begin
             if(rs == 32'd1) begin               // The instruction is for display

@@ -97,6 +97,14 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     // Data memory which will be used by the processor is ceontrolled by the veda memory module as below.
     // The data memory has a size of 32 bits * 256 registers
     veda dat(clk,reset,input_data,data,data_mode,data_ad_in,data_ad_out,data_write);
+
+    // Specifically in cases of load word instruction the data output is to be directly
+    // interfaced into the processor register upon arrival.
+    always @(data) begin
+        if(instr_ID == 13) begin
+            process[rd] <= data;
+        end
+    end
     
     // Logic for the entry of data into the respective memories.
     always @(posedge clk) begin
@@ -281,7 +289,6 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
                 inputs[3] <= rt;                                           // Setup the parameter 2 of the instruction
                 if(instr_ID == 13) begin                                   // Load word execution interfacing data memory
                     data_ad_out <= outputs[1];
-                    process[rd] <= data;
                 end
                 else begin                                                 // Store word execution interfacing data memory
                     data_ad_in <= outputs[1];

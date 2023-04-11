@@ -2,12 +2,22 @@
 
 module decode_test();
     // Example of decoding the instruction
+    reg reset;
     reg [31:0] ir;
     wire [31:0] ID,rs,rt,rd;
 
     // Instantiating the module for Instruction Decode
-    instr_decode uut(ir, ID, rs, rt, rd);
+    instr_decode uut(reset, ir, ID, rs, rt, rd);
 
+    // Control the reset signal for a small amount of time to start the machine
+    initial begin
+        reset <= 1'b0;
+        #1
+        reset <= 1'b1;
+        #1
+        reset <= 1'b0;
+    end
+    
     initial begin
         ir <= 32'b000000_00011_00101_00001_00000_000000;          // This is add $1, $3, $5
         #10
@@ -73,5 +83,6 @@ module decode_test();
         $display("The parameter 2 is %d",rt);
         $display("The parameter 3 is %d",rd);
 
+        #2000 $finish;
     end
 endmodule

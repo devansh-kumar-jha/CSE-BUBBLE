@@ -9,6 +9,7 @@
 
 /// This will be a purely combinational logic.
 module data_transfer_top (
+    input wire reset,
     input wire [31:0] ir,                   // Instruction Register
     input wire [31:0] instr_ID,             // Decoded instruction ID
     input wire [31:0] rs,rt,                // 2 input parameters to the data transfer module from processor

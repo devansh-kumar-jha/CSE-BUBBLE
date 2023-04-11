@@ -41,6 +41,7 @@
 
 /// This is a purely combinational logic.
 module instr_decode (
+    input wire reset,
     input wire [31:0] ir,            // Instruction Register
     output wire [31:0] ID,           // Decoded Instruction ID
     output wire [31:0] rs,rt,rd      // 3 parameters extracted from the instruction
@@ -54,9 +55,11 @@ module instr_decode (
 
     // Whenever the values under ir are changed this module will be signalled and the always block will execute.
     // ID gets the particular instruction ID and parameter outputs are set as explained above.
-    always @(ir) begin
-        $display("The value of opcode is %b",ir);
-        if(opcode == 6'd0) begin
+    always @(*) begin
+        if(reset == 1'b1) begin
+            id_reg <= 32'b0; rs_reg <= 32'b0; rt_reg <= 32'b0; rd_reg <= 32'b0;
+        end
+        else if(opcode == 6'd0) begin
             id_reg <= {27'b0,{func+5'd1}};
             rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
         end

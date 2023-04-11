@@ -22,6 +22,7 @@
 
 /// This will be a combinational logic.
 module alu_top (
+    input wire reset,
     input wire [31:0] ir,                    // Instruction Register
     input wire [31:0] instr_ID,              // Decoded instruction ID
     input wire [31:0] rs,rt,                 // Input Arguments 1 and 2 got from processor
@@ -48,14 +49,20 @@ module alu_top (
     srl alu11(rs,rt,opt[11]);
     slt alu12(rs,rt,opt[12]);
     slti alu13(rs,rt,opt[13]);
+
+    wire [31:0] p,q;
+    assign p = instr_ID - 32'd1;
+    assign q = instr_ID - 32'd12;
     
     // Combinational Always block to select the correct output from the above outputs. 
-    always @(ir) begin
-        if(instr_ID < 13) begin                                  // Presence of an Airthmetic or Logical instruction
-            rd_reg <= opt[instr_ID - 1];
+    always @(*) begin
+        if(reset == 1'b1) begin rd_reg <= 32'b0; end
+        else if(instr_ID == 0) begin end                         // No instruction fetched till now
+        else if(instr_ID < 13) begin                             // Presence of an Airthmetic or Logical instruction
+            rd_reg <= opt[p];
         end
         else if(instr_ID == 24 || instr_ID == 25) begin          // Presence of a Comparison instruction
-            rd_reg <= opt[instr_ID - 12];
+            rd_reg <= opt[q];
         end
         else begin end                                           // Ignore this if it is not an ALU or comparison instruction
     end
@@ -129,12 +136,7 @@ module andk (
     input wire unsigned [31:0] rs,rt,
     output wire unsigned [31:0] rd
 );
-    genvar i;
-    generate
-        for(i=0;i<32;i=i+1) begin
-            and(rd[i],rs[i],rt[i]);
-        end
-    endgenerate
+    assign rd = rs & rt;
 endmodule
 
 // Module for supporting logical or operation.
@@ -194,7 +196,7 @@ module slt (
 );
     wire chk;
     assign chk = (rs < rt) ? 1'b1 : 1'b0;
-    assign rd = {32{chk}};
+    assign rd = {31'b0,chk};
 endmodule
 
 // Module for supporting Set if Less than immediate operation
@@ -205,5 +207,5 @@ module slti (
 );
     wire chk;
     assign chk = (rs < rt) ? 1'b1 : 1'b0;
-    assign rd = {32{chk}};
+    assign rd = {31'b0,chk};
 endmodule
