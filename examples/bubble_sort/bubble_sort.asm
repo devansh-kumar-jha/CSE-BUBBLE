@@ -1,3 +1,20 @@
+#conversions
+
+#move $t0, $s0
+#add $t0, $s0, $0
+
+#li $t0, 42
+#addi $t0, $0, 42
+
+#la $t0, label
+#add $t0, $0, label
+
+#bgez $rs, label
+#bge $rs, $0, label
+
+
+
+
 .data
 strInput: .asciiz "Enter the values of the array:\n"
 strInit: .asciiz "The initial array:\n"
@@ -15,22 +32,30 @@ n:      .word 18 # size of array
 # Stores values - $s0: arr[n] start address    $s1: value of n
 main:
     # STEP 1 -- Allocate required array
-    la $s0, arr            # store start address of arr[n]
+    #la $s0, arr 
+    add $t0, $0, arr    # store start address of arr[n]
     lw $s1, n              # store value of n
     
     # STEP 2 -- Print intial array
     # First print the string prelude  
-    li $v0, 4      # syscall number 4 -- print string
-    la $a0, strInit
+    #li $v0, 4
+    addi $v0, $0, 4      # syscall number 4 -- print string
+    #la $a0, strInit
+    add $a0, $0, strInit
     syscall        # actually print the string
     # Then print the initial array
-    li $t1, 0         # counter for the loop
-    move $t0, $s0     # get the start address of arr[n]
-    loopp1: li $v0, 1           # syscall number 1 -- print integer
+    #li $t1, 0
+    addi $t1, $0, 0         # counter for the loop
+    #move $t0, $s0
+    add $t0, $s0, $0     # get the start address of arr[n]
+    loopp1: #li $v0, 1
+ 		addi $v0, $0, 1           # syscall number 1 -- print integer
             lw $a0, 0($t0)      # load values and put in $a0 for print
             syscall             # actually print the integer
-            li $v0, 4           # syscall number 4 -- print string
-            la $a0, strCR
+            #li $v0, 4
+		addi $v0, $0, 4           # syscall number 4 -- print string
+            #la $a0, strCR
+		add $a0, $0, strCR
             syscall
             addi $t1, $t1, 1     # increase the counter by 1
             addi $t0, $t0, 4     # increase address to the next value
@@ -40,28 +65,39 @@ main:
     jal bubble_sort
 
     # STEP 4 -- Print the sorted array
-    li $v0, 4           # syscall number 4 -- print string
-    la $a0, strCR
+    #li $v0, 4 
+    addi $v0, $0, 4          # syscall number 4 -- print string
+    #la $a0, strCR
+    add $a0, $0, strCR
     syscall
     # First print the string prelude  
-    li $v0, 4      # syscall number 4 -- print string
-    la $a0, strResult
+    #li $v0, 4
+    addi $v0, $0, 4      # syscall number 4 -- print string
+    #la $a0, strResult
+    add $a0, $0, strResult
     syscall        # actually print the string
     # Then print the sorted array
-    li $t1, 0         # counter for the loop
-    move $t0, $s0     # get the start address of arr[n]
-    loop2:  li $v0, 1           # syscall number 1 -- print integer
+    #li $t1, 0
+    addi $t1, $0, 0         # counter for the loop
+    #move $t0, $s0
+    add $t0, $0, $s0     # get the start address of arr[n]
+    loop2:  #li $v0, 1
+		addi $v0, $0, 1           # syscall number 1 -- print integer
             lw $a0, 0($t0)      # load values and put in $a0 for print
             syscall             # actually print the integer
-            li $v0, 4           # syscall number 4 -- print string
-            la $a0, strCR
+            #li $v0, 4
+		addi $v0, $0, 4
+		addi $v0, $0, 4           # syscall number 4 -- print string
+            #la $a0, strCR
+		add $a0, $0, strCR
             syscall
             addi $t1, $t1, 1    # increase the counter by 1
             addi $t0, $t0, 4    # increase address to the next value
             bne $t1, $s1, loop2 # iterate over the loop
     
     # STEP 5 -- exit
-    li $v0, 10  # Syscall number 10 is to terminate the program
+    #li $v0, 10
+    addi $v0, $0, 10  # Syscall number 10 is to terminate the program
     syscall     # exit now
 
 # Sorts the array in place by using bubble sort technique
@@ -69,12 +105,15 @@ main:
 .text
 bubble_sort:
     # STEP 1 -- ITERATE OVER THE ARRAY AND SORT
-    li $t0, 0                           # initiate a counter i
+    #li $t0, 0
+    addi $t0, $0, 0                           # initiate a counter i
     outer:  sub $t1, $s1, $t0           # $t1 = n-i
             addi $t1, $t1, -1           # $t1 = n-i-1
-            li $t2, 0                   # initiate a counter j
+            #li $t2, 0
+		addi $t2, $0, 0                   # initiate a counter j
             sub $t8, $t2, $t1
-            bgez $t8, oend              # Finish the loop if it should be empty
+            #bgez $t8, oend
+		bge $t8, $0, oend             # Finish the loop if it should be empty
     inner:  sll $t3, $t2, 2             # $t3 = j*4
             add $t3, $t3, $s0           # Address of arr[j]
             addi $t4, $t3, 4            # Address of arr[j+1]
