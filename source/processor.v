@@ -2,7 +2,7 @@
 //! This module controls all the sequential execution of the processor and machine cycle execution.
 //! The module should inturn be called with including the other modules of the source in testbench.
 
-module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
+module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debug1,debug2,debug3,debug4,debug5);
     //! STEP 0 -- FSM DESCRIPTION OF THE PROCESSOR
     /// OVERVIEW
     /// This is the processor top module which controls the complete MIPS ISA program made under this repository.
@@ -49,6 +49,14 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     input wire start_signal,add_into;
     input wire [31:0] new_instruction;
     output reg end_signal;
+
+    /// debugs - These are registers for the purpose of debugging of the processor FSM. They dont play any part in working.
+    output wire [31:0] debug1,debug2,debug3,debug4,debug5;
+    assign debug1 = instr_ID;
+    assign debug2 = process[0];
+    assign debug3 = (add_into == 1'b0) ? instr : data;
+    assign debug4 = process[21];
+    assign debug5 = new_instruction;
 
     
     //! STEP 2 -- DEFINING THE GENERAL PURPOSE AND OTHER REGISTERS/WIRES INSIDE THE PROCESSOR
@@ -113,21 +121,35 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
             final <= instr_ad_in + 1;
         end
         else if(end_signal == 1'b0) begin
+            $display("inside");
             instr_mode <= 1'b0; data_mode <= 1'b0;          // Keep the memories into write mode for this phase.
             if(add_into == 1'b0) begin                      // When the available data is an instruction
                 data_write <= 1'b0;                         // Disable writing into the data memory
                 instr_write <= 1'b1;                        // Enable writing into the instruction memory
                 input_instruction <= new_instruction;
-                instr_ad_in <= instr_ad_in + 1;
             end
             else begin                                      // When the available data is a data
                 instr_write <= 1'b0;                        // Disable writing into the instruction memory
                 data_write <= 1'b1;                         // Enable writing into the data memory
                 input_data <= new_instruction;
-                data_ad_in <= data_ad_in - 1;
-                process[15] <= process[15] - 1;             // The stack pointer also updated simultaneously
             end
         end 
+    end
+
+    // The memory pointer updations are done at the negedge of the clock cycle.
+    always @(negedge clk) begin
+        if(start_signal == 1'b1) begin end                  // The case when the data loading is already completed.
+        else begin
+            if(add_into == 1'b0) begin                      // When the available data is an instruction
+                instr_ad_in <= instr_ad_in + 1;
+                instr_ad_out <= instr_ad_out + 1;
+            end
+            else begin                                      // When the available data is a data
+                data_ad_in <= data_ad_in - 1;
+                data_ad_out <= data_ad_out - 1;
+                process[15] <= process[15] - 1;             // The stack pointer also updated simultaneously
+            end
+        end
     end
 
     
@@ -137,6 +159,8 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     /// It will also be used by other modules instantiated in processor for reseting there induvidual memory.
     integer i1;
     always @(posedge reset) begin
+        instr_mode <= 1'b1;                                      // Instruction is kept at read only mode
+        data_mode <= 1'b1;                                       // Data is kept at read only mode
         instr_ad_in <= 0;                                        // Set the input address of instruction memory to 0.
         instr_ad_out <= 0;                                       // Set the output address of instruction memory to 0.
         data_ad_in <= 255;                                       // Set the input address of data memory to 255.
@@ -227,7 +251,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     wire [31:0] instr_ID,rs,rt,rd;
     
     // This is a combinational decoder logic which computes the ID of a particular instruction.
-    instr_decode decode(process[5],instr_ID,rs,rt,rd);
+    instr_decode decode(reset,process[5],instr_ID,rs,rt,rd);
 
     
     //! STEP 7 -- EXECUTION PHASE (CALLING THE TOP MODULES OF VARIOUS PARTS OF THE PROCESSOR TO IMPLEMENT THE INSTRUCTION AS REQUIRED)
@@ -249,22 +273,22 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal);
     // This is the top module of control for all Airthmetic Logic Operations in the Processor. This module instantiates
     // the other sub-modules for various ALU tasks. It works on the processor registers only.
     // It is a combinational logic.
-    alu_top alu(process[5],instr_ID,inputs[0],inputs[1],outputs[0]);
+    alu_top alu(reset,process[5],instr_ID,inputs[0],inputs[1],outputs[0]);
 
     // This is the top module of control for all Data Transfer Operations in the Processor. This module instantiates the
     // other data loading and storing modules. This works on both data memory and processor registers.
     // It is a combinational logic.
-    data_transfer_top transfer(process[5],instr_ID,inputs[2],inputs[3],outputs[1]);
+    data_transfer_top transfer(reset,process[5],instr_ID,inputs[2],inputs[3],outputs[1]);
     
     // This is the top module of control for all Branching Operations in the Processor. This module instantiates the
     // other branching related modules. This works on both instruction memory and processor registers.
     // It is a combinational logic.
-    branch_top branch(process[5],instr_ID,inputs[4],inputs[5],inputs[8],outputs[2]);
+    branch_top branch(reset,process[5],instr_ID,inputs[4],inputs[5],inputs[8],outputs[2]);
     
     // This is the top module for implementation of all system instructions which are the special processor instructions
     // They are all independent of the R, I and J type classification.
     // This will be a sequential logic as it can control the working of the actual Pseudo Operating Software.
-    system_top sys(process[5],instr_ID,inputs[6],inputs[7],outputs[3]);
+    system_top sys(reset,process[5],instr_ID,inputs[6],inputs[7],outputs[3]);
 
     // Logic for execution phase of the Processor FSM
     always @(negedge clk) begin
