@@ -1,3 +1,4 @@
+
 #conversions
 
 #move $t0, $s0
@@ -32,16 +33,16 @@ n:      .word 18 # size of array
 # Stores values - $s0: arr[n] start address    $s1: value of n
 main:
     # STEP 1 -- Allocate required array
-    #la $s0, arr 
-    add $t0, $0, arr    # store start address of arr[n]
+    la $s0, arr 
+    #addi $t0, $0, arr    # store start address of arr[n]
     lw $s1, n              # store value of n
     
     # STEP 2 -- Print intial array
     # First print the string prelude  
-    #li $v0, 4
-    addi $v0, $0, 4      # syscall number 4 -- print string
-    #la $a0, strInit
-    add $a0, $0, strInit
+    li $v0, 4
+    #addi $v0, $0, 4      # syscall number 4 -- print string
+    la $a0, strInit
+    #add $a0, $0, strInit
     syscall        # actually print the string
     # Then print the initial array
     #li $t1, 0
@@ -54,8 +55,8 @@ main:
             syscall             # actually print the integer
             #li $v0, 4
 		addi $v0, $0, 4           # syscall number 4 -- print string
-            #la $a0, strCR
-		add $a0, $0, strCR
+            la $a0, strCR
+		#add $a0, $0, strCR
             syscall
             addi $t1, $t1, 1     # increase the counter by 1
             addi $t0, $t0, 4     # increase address to the next value
@@ -67,14 +68,14 @@ main:
     # STEP 4 -- Print the sorted array
     #li $v0, 4 
     addi $v0, $0, 4          # syscall number 4 -- print string
-    #la $a0, strCR
-    add $a0, $0, strCR
+    la $a0, strCR
+    #add $a0, $0, strCR
     syscall
     # First print the string prelude  
     #li $v0, 4
     addi $v0, $0, 4      # syscall number 4 -- print string
-    #la $a0, strResult
-    add $a0, $0, strResult
+    la $a0, strResult
+    #add $a0, $0, strResult
     syscall        # actually print the string
     # Then print the sorted array
     #li $t1, 0
@@ -88,8 +89,8 @@ main:
             #li $v0, 4
 		addi $v0, $0, 4
 		addi $v0, $0, 4           # syscall number 4 -- print string
-            #la $a0, strCR
-		add $a0, $0, strCR
+            la $a0, strCR
+		#add $a0, $0, strCR
             syscall
             addi $t1, $t1, 1    # increase the counter by 1
             addi $t0, $t0, 4    # increase address to the next value
@@ -104,6 +105,7 @@ main:
 # Uses $s0: Start address of array arr[i], $s1: Length of array
 .text
 bubble_sort:
+
     # STEP 1 -- ITERATE OVER THE ARRAY AND SORT
     #li $t0, 0
     addi $t0, $0, 0                           # initiate a counter i
@@ -113,6 +115,8 @@ bubble_sort:
 		addi $t2, $0, 0                   # initiate a counter j
             sub $t8, $t2, $t1
             #bgez $t8, oend
+		slt $s7, $t8, $0
+		beq $s7, $0, oend
 		bge $t8, $0, oend             # Finish the loop if it should be empty
     inner:  sll $t3, $t2, 2             # $t3 = j*4
             add $t3, $t3, $s0           # Address of arr[j]
@@ -120,7 +124,9 @@ bubble_sort:
             lw $t5, 0($t3)              # $t5 = arr[j]
             lw $t6, 0($t4)              # $t6 = arr[j+1]
             sub $t7, $t5, $t6           # $t7 = arr[j] - arr[j+1]
-            blez $t7, inend             # branch out if arr[j] <= arr[j+1]
+            #blez $t7, inend 
+            slt $s7, $t7, $0
+            bne $s7, $0, inend          # branch out if arr[j] <= arr[j+1]
             sw $t5, 0($t4)              # store arr[j] into arr[j+1]
             sw $t6, 0($t3)              # store arr[j+1] into arr[j]
     inend:  addi $t2, $t2, 1            # $t2 = j+1
