@@ -100,11 +100,11 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debu
     
     // Instruction memory which will be used by the processor is controlled by the veda memory module as below.
     // The instruction memory has a size of 32 bits * 256 registers
-    veda inst(clk,reset,input_instruction,instr,instr_mode,instr_ad_in,instr_ad_out,instr_write);
+    veda_instruction inst(clk,reset,input_instruction,instr,instr_mode,instr_ad_in,instr_ad_out,instr_write);
     
     // Data memory which will be used by the processor is ceontrolled by the veda memory module as below.
     // The data memory has a size of 32 bits * 256 registers
-    veda dat(clk,reset,input_data,data,data_mode,data_ad_in,data_ad_out,data_write);
+    veda_data dat(clk,reset,input_data,data,data_mode,data_ad_in,data_ad_out,data_write);
 
     // Specifically in cases of load word instruction the data output is to be directly
     // interfaced into the processor register upon arrival.
