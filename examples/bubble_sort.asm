@@ -105,6 +105,7 @@ main:
 # Uses $s0: Start address of array arr[i], $s1: Length of array
 .text
 bubble_sort:
+
     # STEP 1 -- ITERATE OVER THE ARRAY AND SORT
     #li $t0, 0
     addi $t0, $0, 0                           # initiate a counter i
@@ -123,7 +124,9 @@ bubble_sort:
             lw $t5, 0($t3)              # $t5 = arr[j]
             lw $t6, 0($t4)              # $t6 = arr[j+1]
             sub $t7, $t5, $t6           # $t7 = arr[j] - arr[j+1]
-            blez $t7, inend             # branch out if arr[j] <= arr[j+1]
+            #blez $t7, inend 
+            slt $s7, $t7, $0
+            bne $s7, $0, inend          # branch out if arr[j] <= arr[j+1]
             sw $t5, 0($t4)              # store arr[j] into arr[j+1]
             sw $t6, 0($t3)              # store arr[j+1] into arr[j]
     inend:  addi $t2, $t2, 1            # $t2 = j+1
