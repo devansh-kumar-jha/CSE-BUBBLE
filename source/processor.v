@@ -83,74 +83,73 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debu
     reg [31:0] process[0:31];
     
     
-    //! STEP 3 -- INTERFACING OF INSTRUCTION MEMORY AND DATA MEMORY AND LOADING THE PROGRAM BEFORE STARTING THE PROCESSOR
-    /// We have to first execute the memory loading phase where the data memory and instruction memory is fed into the program.
-    /// Till the start_signal is 0 we have to ensure that the end_signal remains 0 and all other processes within the processor
-    /// do not create any hindrance to the process of loading into the memory.
+    // //! STEP 3 -- INTERFACING OF INSTRUCTION MEMORY AND DATA MEMORY AND LOADING THE PROGRAM BEFORE STARTING THE PROCESSOR
+    // /// We have to first execute the memory loading phase where the data memory and instruction memory is fed into the program.
+    // /// Till the start_signal is 0 we have to ensure that the end_signal remains 0 and all other processes within the processor
+    // /// do not create any hindrance to the process of loading into the memory.
     
-    // The finish register will be used to store the address of last instruction of the program.
-    // This will facilitate the ending of processor when required. end_signal will be set to high after executing this instruction.
-    reg [31:0] final;
+    // // The finish register will be used to store the address of last instruction of the program.
+    // // This will facilitate the ending of processor when required. end_signal will be set to high after executing this instruction.
+    // reg [31:0] final;
     
-    // Other useful registers and wire to be used later on.
-    reg [7:0] instr_ad_in,instr_ad_out,data_ad_in,data_ad_out;
-    reg [31:0] input_instruction,input_data;
-    wire [31:0] instr,data;
-    reg instr_mode,data_mode,instr_write,data_write;
+    // // Other useful registers and wire to be used later on.
+    // reg [7:0] instr_ad_in,instr_ad_out,data_ad_in,data_ad_out;
+    // reg [31:0] input_instruction,input_data;
+    // wire [31:0] instr,data;
+    // reg instr_mode,data_mode,instr_write,data_write;
     
-    // Instruction memory which will be used by the processor is controlled by the veda memory module as below.
-    // The instruction memory has a size of 32 bits * 256 registers
-    veda_instruction inst(clk,reset,input_instruction,instr,instr_mode,instr_ad_in,instr_ad_out,instr_write);
+    // // Instruction memory which will be used by the processor is controlled by the veda memory module as below.
+    // // The instruction memory has a size of 32 bits * 256 registers
+    // veda_instruction inst(clk,reset,input_instruction,instr,instr_mode,instr_ad_in,instr_ad_out,instr_write);
     
-    // Data memory which will be used by the processor is ceontrolled by the veda memory module as below.
-    // The data memory has a size of 32 bits * 256 registers
-    veda_data dat(clk,reset,input_data,data,data_mode,data_ad_in,data_ad_out,data_write);
+    // // Data memory which will be used by the processor is ceontrolled by the veda memory module as below.
+    // // The data memory has a size of 32 bits * 256 registers
+    // veda_data dat(clk,reset,input_data,data,data_mode,data_ad_in,data_ad_out,data_write);
 
-    // Specifically in cases of load word instruction the data output is to be directly
-    // interfaced into the processor register upon arrival.
-    always @(data) begin
-        if(instr_ID == 13) begin
-            process[rd] <= data;
-        end
-    end
+    // // Specifically in cases of load word instruction the data output is to be directly
+    // // interfaced into the processor register upon arrival.
+    // always @(data) begin
+    //     if(instr_ID == 13) begin
+    //         process[rd] <= data;
+    //     end
+    // end
     
-    // Logic for the entry of data into the respective memories.
-    always @(posedge clk) begin
-        if(start_signal == 1'b1) begin                      // The case when the data loading is already completed.
-            instr_mode <= 1'b1;                             // Keep the instruction memory at read only now.
-            final <= instr_ad_in + 1;
-        end
-        else if(end_signal == 1'b0) begin
-            $display("inside");
-            instr_mode <= 1'b0; data_mode <= 1'b0;          // Keep the memories into write mode for this phase.
-            if(add_into == 1'b0) begin                      // When the available data is an instruction
-                data_write <= 1'b0;                         // Disable writing into the data memory
-                instr_write <= 1'b1;                        // Enable writing into the instruction memory
-                input_instruction <= new_instruction;
-            end
-            else begin                                      // When the available data is a data
-                instr_write <= 1'b0;                        // Disable writing into the instruction memory
-                data_write <= 1'b1;                         // Enable writing into the data memory
-                input_data <= new_instruction;
-            end
-        end 
-    end
+    // // Logic for the entry of data into the respective memories.
+    // always @(posedge clk) begin
+    //     if(start_signal == 1'b1) begin                      // The case when the data loading is already completed.
+    //         instr_mode <= 1'b1;                             // Keep the instruction memory at read only now.
+    //         final <= instr_ad_in + 1;
+    //     end
+    //     else if(end_signal == 1'b0) begin
+    //         instr_mode <= 1'b0; data_mode <= 1'b0;          // Keep the memories into write mode for this phase.
+    //         if(add_into == 1'b0) begin                      // When the available data is an instruction
+    //             data_write <= 1'b0;                         // Disable writing into the data memory
+    //             instr_write <= 1'b1;                        // Enable writing into the instruction memory
+    //             input_instruction <= new_instruction;
+    //         end
+    //         else begin                                      // When the available data is a data
+    //             instr_write <= 1'b0;                        // Disable writing into the instruction memory
+    //             data_write <= 1'b1;                         // Enable writing into the data memory
+    //             input_data <= new_instruction;
+    //         end
+    //     end 
+    // end
 
-    // The memory pointer updations are done at the negedge of the clock cycle.
-    always @(negedge clk) begin
-        if(start_signal == 1'b1) begin end                  // The case when the data loading is already completed.
-        else begin
-            if(add_into == 1'b0) begin                      // When the available data is an instruction
-                instr_ad_in <= instr_ad_in + 1;
-                instr_ad_out <= instr_ad_out + 1;
-            end
-            else begin                                      // When the available data is a data
-                data_ad_in <= data_ad_in - 1;
-                data_ad_out <= data_ad_out - 1;
-                process[15] <= process[15] - 1;             // The stack pointer also updated simultaneously
-            end
-        end
-    end
+    // // The memory pointer updations are done at the negedge of the clock cycle.
+    // always @(negedge clk) begin
+    //     if(start_signal == 1'b1) begin end                  // The case when the data loading is already completed.
+    //     else begin
+    //         if(add_into == 1'b0) begin                      // When the available data is an instruction
+    //             instr_ad_in <= instr_ad_in + 1;
+    //             instr_ad_out <= instr_ad_out + 1;
+    //         end
+    //         else begin                                      // When the available data is a data
+    //             data_ad_in <= data_ad_in - 1;
+    //             data_ad_out <= data_ad_out - 1;
+    //             process[15] <= process[15] - 1;             // The stack pointer also updated simultaneously
+    //         end
+    //     end
+    // end
 
     
     //! STEP 4 -- INITIALIZATION OF PROGRAM COUNTER AND OTHER SYSTEM CONTROLLED REGISTERS INSIDE THE PROCESSOR
@@ -243,9 +242,14 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debu
     
     /// Other Special System Instructions
     // 26: syscall          - Opcode: 21
-    //      27: display     - System Call Code: 1
-    //      28: exit        - System Call Code: 2
-    //      29: nop         - System Call Code: 3
+    //      27: display signed integer    - System Call Code: 1
+    //      28: exit                      - System Call Code: 2
+    //      29: nop                       - System Call Code: 3
+    //      30: display 4 char string     - System Call Code: 4
+    //      31: display 8 char string     - System Call Code: 5
+    //      32: display 12 char string    - System Call Code: 6
+    //      33: display 16 char string    - System Call Code: 7
+    //      34: display unsigned integer  - System Call Code: 8
     
     // This will denote the ID of the instruction which will be used later by the execution phase of processor.
     wire [31:0] instr_ID,rs,rt,rd;
@@ -268,7 +272,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debu
     // All the inputs to the modules responsible for execution will be available in the following register mesh.
     // inputs[0]-inputs[7] direct inputs to the top execution modules in order given a pair to all the modules
     // inputs[8]-inputs[10] indirect input registers used to store intermediate values while execution is going on
-    reg [31:0] inputs[0:10];
+    reg [31:0] inputs[0:11];
 
     // This is the top module of control for all Airthmetic Logic Operations in the Processor. This module instantiates
     // the other sub-modules for various ALU tasks. It works on the processor registers only.
@@ -288,7 +292,7 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debu
     // This is the top module for implementation of all system instructions which are the special processor instructions
     // They are all independent of the R, I and J type classification.
     // This will be a sequential logic as it can control the working of the actual Pseudo Operating Software.
-    system_top sys(reset,process[5],instr_ID,inputs[6],inputs[7],outputs[3]);
+    system_top sys(reset,process[5],instr_ID,inputs[6],inputs[7],inputs[9],inputs[10],inputs[11],outputs[3]);
 
     // Logic for execution phase of the Processor FSM
     always @(negedge clk) begin
@@ -343,6 +347,9 @@ module processor(clk,reset,start_signal,new_instruction,add_into,end_signal,debu
                 data_write <= 1'b0;                                        // Keep the writeEnable of data memory disabled.
                 inputs[6] <= process[8];                                   // The v0 register store the system call number
                 inputs[7] <= process[10];                                  // The a0 register stores the value to be printed
+                inputs[8] <= process[11];                                  // The a1 register stores the value to be printed
+                inputs[9] <= process[12];                                  // The a2 register stores the value to be printed
+                inputs[10] <= process[13];                                 // The a3 register stores the value to be printed
                 process[0] <= process[0] + 1;
             end
         end

@@ -21,9 +21,9 @@ module bubble_sort_test();
     // Control the reset signal for a small amount of time to start the machine
     initial begin
         reset <= 1'b0;
-        #1
+        #2
         reset <= 1'b1;
-        #1
+        #2
         reset <= 1'b0;
     end
 
@@ -43,35 +43,38 @@ module bubble_sort_test();
     initial begin
         $monitor("clk = %d start = %d end = %d ID = %d PC = %d memory = %b $t4 = %d $inst = %b",clk,start_signal,end_signal,debug1,debug2,debug3,debug4,debug5);
         
-        // #10
-        // // Write program to enter instruction memory into the machine
-        //     new_instruction <= 32'b000000_00110_10001_0000000000000000
-        // #20 new_instruction <= 32'b000000_11001_10001_10010_00000_000001
-        // #20 new_instruction <= 32'b000000_10010_10010_1111111111111111
-        // #20 new_instruction <= 32'b000000_00110_10011_0000000000000000
-        // #20 new_instruction <= 32'b000000_10011_10010_11001_00000_000001
-        // #20 new_instruction <= 32'b010011_11001_00110_11111_00000_000000
-        // #20 new_instruction <= 32'b001010_00110_11111_0000000000001111
-        // #20 new_instruction <= 32'b001010_00110_11001_0000000000001110 
-        // #20 new_instruction <= 32'b000111_10011_10100_0000000000000010
-        // #20 new_instruction <= 32'b000000_10100_11000_10100_00000_000000
-        // #20 new_instruction <= 32'b000000_10100_10101_0000000000000100
-        // #20 new_instruction <= 32'b001000_10100_10110_0000000000000000
-        // #20 new_instruction <= 32'b001000_10101_10111_0000000000000000
-        // #20 new_instruction <= 32'b000000_10110_10111_11000_00000_000001
-        // #20 new_instruction <= 32'b010011_11000_00110_11111_00000_000000
-        // #20 new_instruction <= 32'b001011_00110_11111_0000000000000011
-        // #20 new_instruction <= 32'b001001_10101_10110_0000000000000000
-        // #20 new_instruction <= 32'b001001_10100_10111_0000000000000000
-        // #20 new_instruction <= 32'b000000_10011_10011_0000000000000001
-        // #20 new_instruction <= 32'b001011_10010_10011_1111111111110101    
-        // #20 new_instruction <= 32'b000000_10001_10001_0000000000000001
-        // #20 new_instruction <= 32'b001011_11001_10011_1111111111101100
-        // #20 new_instruction <= 32'b100001_00000000000000000000010000
+        #10
+        // $display("Loading of instruction memory begins");
+        // Write program to enter instruction memory into the machine
+        //     new_instruction <= 32'b000000_00110_10001_0000000000000000;
+        // #20 new_instruction <= 32'b000000_11001_10001_10010_00000_000001;
+        // #20 new_instruction <= 32'b000000_10010_10010_1111111111111111;
+        // #20 new_instruction <= 32'b000000_00110_10011_0000000000000000;
+        // #20 new_instruction <= 32'b000000_10011_10010_11001_00000_000001;
+        // #20 new_instruction <= 32'b010011_11001_00110_11111_00000_000000;
+        // #20 new_instruction <= 32'b001010_00110_11111_0000000000001111;
+        // #20 new_instruction <= 32'b001010_00110_11001_0000000000001110;
+        // #20 new_instruction <= 32'b000111_10011_10100_0000000000000010;
+        // #20 new_instruction <= 32'b000000_10100_11000_10100_00000_000000;
+        // #20 new_instruction <= 32'b000000_10100_10101_0000000000000100;
+        // #20 new_instruction <= 32'b001000_10100_10110_0000000000000000;
+        // #20 new_instruction <= 32'b001000_10101_10111_0000000000000000;
+        // #20 new_instruction <= 32'b000000_10110_10111_11000_00000_000001;
+        // #20 new_instruction <= 32'b010011_11000_00110_11111_00000_000000;
+        // #20 new_instruction <= 32'b001011_00110_11111_0000000000000011;
+        // #20 new_instruction <= 32'b001001_10101_10110_0000000000000000;
+        // #20 new_instruction <= 32'b001001_10100_10111_0000000000000000;
+        // #20 new_instruction <= 32'b000000_10011_10011_0000000000000001;
+        // #20 new_instruction <= 32'b001011_10010_10011_1111111111110101;
+        // #20 new_instruction <= 32'b000000_10001_10001_0000000000000001;
+        // #20 new_instruction <= 32'b001011_11001_10011_1111111111101100;
+        // #20 new_instruction <= 32'b100001_00000000000000000000010000;
 
+        // $display("Change of loading memory target to data memory happens");
         // Change the add_into flag from instruction to data memory
         add_into <= 1'b1;
 
+        // $display("Loading of data memory begins");
         // // Write program to enter data memory into the machine
         // #20 new_instruction <= 32'd10;
         // #20 new_instruction <= 32'd643;
@@ -85,9 +88,12 @@ module bubble_sort_test();
         // #20 new_instruction <= 32'd868;
         // #20 new_instruction <= 32'd57320
 
+        // $display("The input to memory is now stopped");
         // End the data loading phase and start the execution of the program
-        // Execution starts here, you can print certain values here to check execution
         start_signal <= 1'b1;
+        
+        // $display("The execution of program starts here");
+        // Execution starts here, you can print certain values here to check execution
         
         #10000
         $finish;

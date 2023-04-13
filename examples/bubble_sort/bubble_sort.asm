@@ -100,7 +100,7 @@ bubble_sort:
 
     # STEP 1 -- ITERATE OVER THE ARRAY AND SORT
     # li $t0, 0
-    addi $t0, $0, 0                           # initiate a counter i
+    addi $t0, $0, 0                     # initiate a counter i
     outer:  sub $t1, $s3, $t0           # $t1 = n-i
             addi $t1, $t1, -1           # $t1 = n-i-1
             # li $t2, 0
@@ -109,7 +109,7 @@ bubble_sort:
             # bgez $t8, oend
 		slt $s7, $s1, $0
 		beq $s7, $0, oend
-		bge $s1, $0, oend             # Finish the loop if it should be empty
+		bge $s1, $0, oend           # Finish the loop if it should be empty
     inner:  sll $t3, $t2, 2             # $t3 = j*4
             add $t3, $t3, $s2           # Address of arr[j]
             addi $t4, $t3, 4            # Address of arr[j+1]

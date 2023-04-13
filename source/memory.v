@@ -21,19 +21,25 @@ module veda_instruction #(parameter width = 32, parameter depth = 256, parameter
     reg [width-1:0] dataout,cur;
     integer i;
 
+    // Setting the memory at erased state.
     initial begin
+        cur <= 0;
+    end
+
+    initial begin
+        #1
         // Write program to enter instruction memory into the machine
         memory[0]  <= 32'b001000_00110_11011_0000000000000000;               // lw $27, 0($6)  $s3 = 10
         memory[0]  <= 32'b000001_00110_11010_0000000000000001;               // addi $26, $6, 1  $s2 = 1
         memory[0]  <= 32'b000000_00110_10001_0000000000000000;               // addi $17, $6, 0
         memory[1]  <= 32'b000000_11011_10001_10010_00000_000001;             // sub $18, $27, $17
         memory[2]  <= 32'b000001_10010_10010_1111111111111111;               // addi $18, $18, -1
-        memory[3]  <= 32'b000000_00110_10011_0000000000000000;               // addi $19, $6, 0
-        memory[4]  <= 32'b000000_10011_10010_11001_00000_000001;             // sub $
-        memory[5]  <= 32'b010011_11001_00110_11111_00000_000000;
-        memory[6]  <= 32'b001010_00110_11111_0000000000001111;
-        memory[7]  <= 32'b001010_00110_11001_0000000000001110;
-        memory[8]  <= 32'b000111_10011_10100_0000000000000010;
+        memory[3]  <= 32'b000001_00110_10011_0000000000000000;               // addi $19, $6, 0
+        memory[4]  <= 32'b000000_10011_10010_11001_00000_000001;             // sub $25, $19, $18
+        memory[5]  <= 32'b010011_11001_00110_11111_00000_000000;             // slt $31, $25, $6
+        memory[6]  <= 32'b001010_00110_11111_0000000000001101;               // beq $31, $6, 13
+        memory[7]  <= 32'b001101_00110_11001_0000000000001100;               // bgte $25, $6, 12
+        memory[8]  <= 32'b000111_10011_10100_0000000000000010;               // sll $20, $19, 2
         memory[9]  <= 32'b000000_10100_11000_10100_00000_000000;
         memory[10] <= 32'b000000_10100_10101_0000000000000100;
         memory[11] <= 32'b001000_10100_10110_0000000000000000;
@@ -88,10 +94,16 @@ module veda_data #(parameter width = 32, parameter depth = 256, parameter len = 
     reg [width-1:0] dataout,cur;
     integer i;
 
+    // Setting the memory at erased state.
     initial begin
+        cur <= 0;
+    end
+    
+    initial begin
+        #1
         // Write program to enter data memory into the machine
         memory[0] <= 32'd10;                        // Length of array
-        memory[1] <= 32'd643;                       // Starting address of memory
+        memory[1] <= 32'd643;                       // Starting address of array in data memory
         memory[2] <= 32'd573;
         memory[3] <= 32'd532;
         memory[4] <= 32'd087;
@@ -101,7 +113,7 @@ module veda_data #(parameter width = 32, parameter depth = 256, parameter len = 
         memory[8] <= 32'd805;
         memory[9] <= 32'd868;
         memory[10] <= 32'd57320;
-        memory[11] <= 32'd378;
+        memory[11] <= 32'd378;                      // Last value in array to be sorted
         cur <= 12;
     end
     

@@ -10,8 +10,8 @@
     // 8:  or r0, r1, r2    - R type - Opcode: 4 Function: 0
     // 9:  andi r0, r1, 10  - I type - Opcode: 5
     // 10: ori r0, r1, 100  - I type - Opcode: 6
-    // 11: sll r0, r1, 10   - I type - Opcode: 7 Function: 0
-    // 12: srl r0, r1, 100  - I type - Opcode: 7 Function: 1
+    // 11: sll r0, r1, 10   - R type - Opcode: 7 Function: 0
+    // 12: srl r0, r1, 100  - R type - Opcode: 7 Function: 1
     // 13: lw r0, 10(r1)    - I type - Opcode: 8
     // 14: sw r0, 10(r1)    - I type - Opcode: 9
     // 15: beq r0, r1, 10   - I type - Opcode: 10
@@ -78,7 +78,10 @@ module instr_decode (
         end
         else begin
             id_reg <= {27'b0,{opcode+5'd5}};
-            if(opcode < 16 || opcode == 20) begin
+            if(opcode == 11 || opcode == 12) begin
+                rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
+            end
+            else if(opcode < 16 || opcode == 20) begin
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
             end
             else if(opcode < 19) begin rs_reg <= {6'b0,ir[25:0]}; end
