@@ -1,3 +1,7 @@
+//! CS220 Assignment 7
+//! Devansh Kumar Jha 200318
+//! Shivang Pandey 200941
+
 //! This is the controller module for execution of operating system internal instructions.
 //! There are 3 system instructions which are given by
     // 26: syscall          - Opcode: 21

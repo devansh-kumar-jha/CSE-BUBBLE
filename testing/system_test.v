@@ -6,12 +6,12 @@
 
 module system_test();
     // Example of decoding the instruction
-    reg reset;
+    reg clk, reset;
     reg [31:0] ir,ID,rs,rt1,rt2,rt3,rt4;
     wire [31:0] rd;
 
     // Instantiating the module for Instruction Decode
-    system_top uut(reset, ir, ID, rs, rt1, rt2, rt3, rt4, rd);
+    system_top uut(clk, reset, ir, ID, rs, rt1, rt2, rt3, rt4, rd);
 
     // Control the reset signal for a small amount of time to start the machine
     initial begin
@@ -25,6 +25,9 @@ module system_test();
     initial begin
         ir <= 32'b0; ID <= 32'b0; rs <= 32'b0;
         rt1 <= 32'b0; rt2 <= 32'b0; rt3 <= 32'b0; rt4 <= 32'b0;
+        #10
+        clk <= 1'b0;
+        forever #10 clk <= ~clk;
     end
 
     initial begin

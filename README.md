@@ -3,9 +3,9 @@ This repository contains the course project of CS220A. We have made an Instructi
 
 ## FILES AND FOLDERS IN THE PROJECT
 1) *problem.pdf* - Contains the explanantion of the problem statement required to be solved.
-2) *source* - Folder for source code.
-3) *examples* - Some examples of execution of simple programs using FSM controlled by the source code.
-4) *testing* - Debugging testbenches are present in this folder.
+2) **source** - Folder for source code.
+3) **examples** - Some examples of execution of simple programs using FSM controlled by the source code.
+4) **testing** - Debugging testbenches are present in this folder.
 5) *documentation.pdf* - Contains the description of the design of Instruction Set Architecture including processor architecture, instructions supported with machine conversion and memory architecture.
 
 ## INSTRUCTIONS FOR USAGE
