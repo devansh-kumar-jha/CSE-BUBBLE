@@ -3,5 +3,7 @@ Source code for the Instruction Set Architecture being implemented in Verilog
 
 ## FILES INCLUDED
 1) *processor.v* - The top central module which will be called by the user program. It simulates the CPU which will handle the whole execution of the program.
-2) *instr_fetch.v* - The module which will put the next instruction to be executed in the IR register on a posedge of clock.
-3) *instr_decode.v* - Will send the processor to a particular data path to execute the instruction currently present in the IR register.
+2) *decode.v* - Contains the instruction decode phase of the fsm.
+3) *memory.v* - All data and instruction memory modules are present in it.
+4) *branching.v* - Implements the execution of all conditional and unconditional branch instructions.
+5) *alu.v* - Implements all arithmetic, logical and comparison instructions.
