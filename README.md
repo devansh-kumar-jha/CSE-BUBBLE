@@ -31,20 +31,32 @@ Replace the phrase program_name with the name of your verilog program file.
 3) **PDS - 3** -  The details are mentioned in the documentation.
 
 4) **PDS - 4** -  The instruction fetch phase has been implemented in "processor.v" file in source folder from lines 179 to 197.
+```
+cd source
+```
 
 5) **PDS - 5** -  The instruction decode phase has been implemented in "decode.v", and "processor.v" lines 200 to 262, in the source folder
+```
+cd source
+```
 
 6) **PDS - 6** - The ALU has been implemented in "alu.v" in the source folder.
+```
+cd source
+```
 
 7) **PDS - 7** - The branching operations have been implemented in "branching.v" in the source folder.
+```
+cd source
+```
 
-8) **PDS - 8** - Go to fsm_test folder in examples folder. *fsm_test.asm* contains the MIPS code which is used to test the functioning of the Finite State Machine of the 
+8) **PDS - 8** - Go to fsm_test folder in examples folder. *fsm_test.asm* contains the MIPS code which is used to test the functioning of the Finite State Machine of the source code.
 ```
 cd examples\fsm_test
 iverilog -o test fsm_test.v
 vvp test
 ```
-The line 47 is used to print the state of the fsm at each clock cycle, it can be commented if we just want to see the output.
+The line 47 (monitor command) in this file is used to print the state of the FSM at each clock cycle, it can be commented out if we just want to see the output of the machine.
 
 9) **PDS - 9** - Go to bubble_sort folder in examples folder and run the program *bubble_sort.asm* on QtSpim to check the execution of MIPS assembly program. This program is converted into source machine code and is mentioned in file *bubble_sort_isa.txt*.
 ```
@@ -57,4 +69,4 @@ iverilog -o test bubble_sort_auto.v
 vvp test
 ```
 This will show the output of bubble sort program. Note that you can also use *bubble_sort.v* in place of *bubble_sort_auto.v*.
-If you use *bubble_sort.v* you can change the array enterred in the program by changing the data section in file *bubble_sort.v*.
+If you use *bubble_sort.v* you can change the array enterred in the program by changing the data section in file *bubble_sort.v* testbench area.
