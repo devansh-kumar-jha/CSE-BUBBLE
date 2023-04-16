@@ -1,4 +1,5 @@
 `include "../source/alu.v"
+`include "../source/branching.v"
 
 module alu_test();
     // Example of decoding the instruction
