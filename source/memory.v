@@ -1,3 +1,7 @@
+//! CS220 Assignment 7
+//! Devansh Kumar Jha 200318
+//! Shivang Pandey 200941
+
 //! These are the memory modules which will be called and used in the processor module. They all will be present in the
 //! write mode until the loading phase of the processor is running after that instruction memory would convert into
 //! read only mode but the data memory would still be present in write mode to the user.

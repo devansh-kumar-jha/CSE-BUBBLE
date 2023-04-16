@@ -1,3 +1,7 @@
+//! CS220 Assignment 7
+//! Devansh Kumar Jha 200318
+//! Shivang Pandey 200941
+
 //! This is the master module which will inturn call all the other modules in the source code.
 //! This module controls all the sequential execution of the processor and machine cycle execution.
 //! The module should inturn be called with including the other modules of the source in testbench.
