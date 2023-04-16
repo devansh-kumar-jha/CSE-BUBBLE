@@ -1,3 +1,8 @@
+//! CS220 Assignment 7
+//! Devansh Kumar Jha 200318
+//! Shivang Pandey 200941
+
+
 //! This is the file which contains implementation of all airthmetic, logical and comparison instructions.
 //! There are 14 instructions implemented here which are given by
     // 1:  add r0, r1, r2   - R type - Opcode: 0 Function: 0

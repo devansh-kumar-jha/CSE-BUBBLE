@@ -1,3 +1,7 @@
+//! CS220 Assignment 7
+//! Devansh Kumar Jha 200318
+//! Shivang Pandey 200941
+
 //! This module will control the Instruction Decode phase of the FSM.
 //! The decoder logic is presented in the processor module also.
     // 1:  add r0, r1, r2   - R type - Opcode: 0 Function: 0

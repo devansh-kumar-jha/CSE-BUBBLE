@@ -1,3 +1,8 @@
+//! CS220 Assignment 7
+//! Devansh Kumar Jha 200318
+//! Shivang Pandey 200941
+
+
 `include "..\..\source\processor.v"
 `include "..\..\source\decode.v"
 `include "..\..\source\alu.v"
