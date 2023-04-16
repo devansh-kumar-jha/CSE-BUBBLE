@@ -1,34 +1,36 @@
 `include "..\source\processor.v"
 `include "..\source\decode.v"
 `include "..\source\alu.v"
-`include "..\source\transfer.v"
 `include "..\source\branching.v"
 `include "..\source\system.v"
 `include "..\source\memory.v"
 
-module tb();
+module sample_program();
 
     // Registers and wires which will be used as an interface between processor and test benches
     reg clk,reset,start_signal;
     reg add_into;
     reg [31:0] new_instruction;
     wire end_signal;
+    wire [31:0] debug1,debug2,debug3,debug4,debug5,debug6,debug7;
 
     // Call the processor module for the execution of the program in the machine.
-    processor psd(clk,reset,start_signal,new_instruction,add_into,end_signal);
+    wire auto_val;
+    assign auto_val = 1'b0;
+    processor #(.auto(0)) psd(clk,reset,start_signal,new_instruction,add_into,end_signal,debug1,debug2,debug3,debug4,debug5,debug6,debug7);
 
     // Control the reset signal for a small amount of time to start the machine
     initial begin
         reset <= 1'b0;
-        #2
+        #1
         reset <= 1'b1;
-        #2
+        #1
         reset <= 1'b0;
     end
 
     // Machine process synchronizing clock signal generation
     initial begin
-        start_signal <= 1'b0;
+        start_signal <= auto_val;
         add_into <= 1'b0;
         new_instruction <= 32'b0;
         #10
@@ -40,22 +42,31 @@ module tb();
     // After that input the data into the processor
     // After that set the start_signal to HIGH
     initial begin
+        
+        #10
+        // Write machine codes to enter instruction memory into the machine
+            // Instruction 1
+        #20 // Instruction 2
+        #20 // Instruction 3
+        #20 // Instruction 4 .... and so on
 
-        // Write program to enter instruction memory into the machine
-        #10 new_instruction <= 32'b0;
-
+        #30
         // Change the add_into flag from instruction to data memory
-        #10 add_into <= 1'b1;
+        add_into <= 1'b1;
 
+        #10
         // Write program to enter data memory into the machine
-        #10 new_instruction <= 32'b0;
+            // 4 bytes data at location 1
+        #20 // 4 bytes data at location 2
+        #20 // 4 bytes data at location 3
+        #20 // 4 bytes data at location 4 .... and so on
 
+        #30
         // End the data loading phase and start the execution of the program
-        // Execution starts here, you can print certain values here to check execution
         start_signal <= 1'b1;
         
-        #10000
-        $finish;
+        // Execution starts here, you can print certain values here to check execution
+
     end
 
 endmodule
