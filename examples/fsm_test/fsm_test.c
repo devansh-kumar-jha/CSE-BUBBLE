@@ -7,10 +7,10 @@ int main()
     
     // Loop and print the output
     int num4=num2+num3;
-    while(num4<num1) {
+    do {
         printf("%d\n",num4);
         num4++;
-    }
+    }while(num4<num1);
 
     // Exit the program
     return 0;

@@ -3,11 +3,12 @@
 module branch_test();
     // Example of decoding the instruction
     reg reset;
-    reg [31:0] ir,ID,rs,rt,rd;
+    reg [31:0] pc_in,ir,ID,rs,rt,rd;
     wire [31:0] out;
+    wire warn_signal;
 
     // Instantiating the module for Instruction Decode
-    branch_top uut(reset, ir, ID, rs, rt, rd, out);
+    branch_top uut(reset, pc_in, ir, ID, rs, rt, rd, out, warn_signal);
 
     // Control the reset signal for a small amount of time to start the machine
     initial begin
@@ -19,7 +20,7 @@ module branch_test();
     end
     
     initial begin
-        ir <= 32'b0; ID <= 32'b0;
+        ir <= 32'b0; ID <= 32'b0; pc_in <= 32'b0;
         rs <= 32'b0; rt <= 32'b0; rd <= 32'b0;
     end
 
