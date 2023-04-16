@@ -1,3 +1,7 @@
+# CS220 Assignment 7
+# Devansh Kumar Jha 200318
+# Shivang Pandey 200941
+
 .data
 strCT: .asciiz "Printed Values\n"
 strCR: .asciiz "\n"
