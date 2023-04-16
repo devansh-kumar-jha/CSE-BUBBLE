@@ -42,11 +42,9 @@ module bubble_sort_test();
     // After that input the data into the processor
     // After that set the start_signal to HIGH
     initial begin
-        $monitor("clk = %d instr = %b instr_in = %d out_instr = %b",clk,debug1,debug3,debug5);
         
         #10
         // Write program to enter instruction memory into the machine
-        $display("Loading of instruction memory begins");
             new_instruction <= 32'b001000_00110_11011_0000000000001010;               // lw $27, 10($6)  $s3 = 10 (main)
         #20 new_instruction <= 32'b000001_00110_11010_0000000000001011;               // addi $26, $6, 11  $s2 = 11
         #20 new_instruction <= 32'b000001_00110_01001_0000000000000010;               // addi $9, $6, 2
@@ -99,13 +97,13 @@ module bubble_sort_test();
         #20 new_instruction <= 32'b001011_11011_10010_1111111111111010;               // bne $18, $27, -6
         #20 new_instruction <= 32'b010001_00000000000000000000010000;                 // jr $16 (end2)
 
+        #30
         // Change the add_into flag from instruction to data memory
-        $display("Change of loading memory target to data memory happens");
         add_into <= 1'b1;
 
+        #10
         // Write program to enter data memory into the machine
-        $display("Loading of data memory begins");
-        #20 new_instruction <= " ";                           // strCT
+            new_instruction <= " ";                           // strCT
         #20 new_instruction <= "\n";                          // strCR
         #20 new_instruction <= "Init";                        // strInit
         #20 new_instruction <= "ial ";
@@ -115,7 +113,7 @@ module bubble_sort_test();
         #20 new_instruction <= "ed a";
         #20 new_instruction <= "rray";
         #20 new_instruction <= ":   ";
-        #20 new_instruction <= 32'd11;                        // n
+        #20 new_instruction <= 32'd15;                        // n
         #20 new_instruction <= 32'd643;                       // arr
         #20 new_instruction <= 32'd573;
         #20 new_instruction <= 32'd532;
@@ -127,16 +125,17 @@ module bubble_sort_test();
         #20 new_instruction <= 32'd868;
         #20 new_instruction <= 32'd57320;
         #20 new_instruction <= 32'd378;
+        #20 new_instruction <= 32'd868;
+        #20 new_instruction <= 32'd57320;
+        #20 new_instruction <= 32'd0;
+        #20 new_instruction <= 32'd3;
 
+        #30
         // End the data loading phase and start the execution of the program
-        $display("The input to memory is now stopped");
         start_signal <= 1'b1;
         
         // Execution starts here, you can print certain values here to check execution
-        $display("The execution of program starts here");
 
-        #1000
-        $finish;
     end
 
 endmodule

@@ -1,4 +1,5 @@
 .data
+strCT: .asciiz "Printed Values\n"
 strCR: .asciiz "\n"
 
 # Please change the code here to change the data inputs in the program being sorted.
@@ -17,11 +18,13 @@ main:
     lw $t0, 0($t4)         # store value of num1 in $t0
     lw $t1, 0($t5)         # store value of num1 in $t1
     lw $t2, 0($t6)         # store value of num1 in $t2
-    addi $t7, $0, 1        # Keep $t7 = 1 
+    addi $v0, $0, 4        # syscall number 4 -- print string
+    la $a0, strCT
+    syscall 
     
     # STEP 2 -- Run the loop and print output
     add $t4, $t2, $t1            # $t4 = $t2 + $t1
-    loopp1: add $v0, $0, $t7     # syscall number 1 -- print an integer
+    loopp1: addi $v0, $0, 1      # syscall number 1 -- print an integer
             addi $a0, $t4, 0     # put in $a0 the values for printing
             syscall              # actually print the integer
             li $v0, 4            # syscall number 4 -- print string

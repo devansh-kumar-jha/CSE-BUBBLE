@@ -52,13 +52,13 @@ module processor #(parameter auto = 0) (clk,reset,start_signal,new_instruction,a
 
     /// debugs - These are registers for the purpose of debugging of the processor FSM. They dont play any part in working.
     output wire signed [31:0] debug1,debug2,debug3,debug4,debug5,debug6,debug7;
-    assign debug1 = input_instruction;
-    assign debug2 = input_data;
-    assign debug3 = instr_ad_in;
-    assign debug4 = data_ad_in;
-    assign debug5 = instr;
+    assign debug1 = instr_ID;
+    assign debug2 = process[0];
+    assign debug3 = final;
+    assign debug4 = instr;
+    assign debug5 = data;
     assign debug6 = data;
-    assign debug7 = process[21];
+    assign debug7 = final;
 
     
     //! STEP 2 -- DEFINING THE GENERAL PURPOSE AND OTHER REGISTERS/WIRES INSIDE THE PROCESSOR
@@ -112,7 +112,7 @@ module processor #(parameter auto = 0) (clk,reset,start_signal,new_instruction,a
     always @(posedge clk) begin
         if(start_signal == 1'b1) begin                      // The case when the data loading is already completed.
             instr_mode <= 1'b1;                             // Keep the instruction memory at read only now.
-            final <= (auto == 0) ? instr_ad_in : 51;
+            final <= (auto == 0) ? instr_ad_in + 1 : 51;
         end
         else if(end_signal == 1'b0) begin
             instr_mode <= 1'b0; data_mode <= 1'b0;          // Keep the memories into write mode for this phase.
@@ -154,10 +154,10 @@ module processor #(parameter auto = 0) (clk,reset,start_signal,new_instruction,a
     always @(posedge reset) begin
         instr_mode <= 1'b1;                                      // Instruction is kept at read only mode
         data_mode <= 1'b0;                                       // Data is kept at write mode
-        instr_ad_in <= -1;                                       // Set the input address of instruction memory to 0.
-        instr_ad_out <= 0;                                       // Set the output address of instruction memory to 0.
-        data_ad_in <= -1;                                        // Set the input address of data memory to 255.
-        data_ad_out <= 0;                                        // Set the output address of data memory to 0.
+        instr_ad_in <= -2;                                       // Set the input address of instruction memory to 0.
+        instr_ad_out <= -2;                                      // Set the output address of instruction memory to 0.
+        data_ad_in <= -2;                                        // Set the input address of data memory to 255.
+        data_ad_out <= -2;                                       // Set the output address of data memory to 0.
         end_signal <= 0;                                         // Set the end_signal to be 0 initially.
         input_instruction <= 0;                                  // Input instruction to instruction memory is cleared
         input_data <= 0;                                         // Input data to data memory is cleared
@@ -169,7 +169,7 @@ module processor #(parameter auto = 0) (clk,reset,start_signal,new_instruction,a
         process[7] <= 0;                                         // Register 'at' set to 0.
         for(i1=8;i1<=13;i1=i1+1) begin process[i1] <= 0; end     // Clear all v and a registers in processor.
         process[14] <= 0;                                        // Global Pointer initialized at the top of the Data Memory.
-        process[15] <= 255;                                      // Stack Pointer initialized at the end of the Data Memory.
+        process[15] <= -2;                                       // Stack Pointer initialized at the end of the Data Memory.
         process[16] <= 0;                                        // Register 'ra' set to 0.
         for(i1=17;i1<=31;i1=i1+1) begin process[i1] <= 0; end    // Clear all t and s registers in processor.
         for(i1=0;i1<=10;i1=i1+1) begin inputs[i1] <= 0; end      // Execution input registers are cleared initally.

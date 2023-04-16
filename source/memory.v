@@ -98,7 +98,6 @@ module veda_instruction #(parameter width = 32, parameter depth = 256, parameter
         else begin
             if(writeEnable==1'b1 && mode==1'b0) begin
                 memory[address_a] <= in;
-                $display("Instruction %b loaded at location %d",in,address_a);
             end
         end
     end
