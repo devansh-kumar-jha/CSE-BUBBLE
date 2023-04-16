@@ -25,10 +25,15 @@
     // 23: jal 1000         - J type - Opcode: 18
     // 24: slt r0, r1, r2   - R type - Opcode: 19 Function: 0
     // 25: slti r0, r1, 100 - I type - Opcode: 20
-    // 26: syscall          - Opcode: 21
-    //      27: display
-    //      28: exit
-    //      29: nop
+    // 26: syscall          - J type - Opcode: 21
+    //      27: display signed integer    - System Call Code: 1
+    //      28: exit                      - System Call Code: 2
+    //      29: nop                       - System Call Code: 3
+    //      30: display 4 char string     - System Call Code: 4
+    //      31: display 8 char string     - System Call Code: 5
+    //      32: display 12 char string    - System Call Code: 6
+    //      33: display 16 char string    - System Call Code: 7
+    //      34: display unsigned integer  - System Call Code: 8
 //! The 3 parameters extracted by decoding and provided to the processor work as the following
     // rs - The argument 1 of the instruction not applied for system instructions.
     // rt - The argument 2 of the instruction not applied for system or unconditional jump instructions.
@@ -42,9 +47,9 @@
 /// This is a purely combinational logic.
 module instr_decode (
     input wire reset,
-    input wire [31:0] ir,            // Instruction Register
-    output wire [31:0] ID,           // Decoded Instruction ID
-    output wire [31:0] rs,rt,rd      // 3 parameters extracted from the instruction
+    input wire [31:0] ir,                   // Instruction Register
+    output wire [31:0] ID,                  // Decoded Instruction ID
+    output wire signed [31:0] rs,rt,rd      // 3 parameters extracted from the instruction
 );
     // Wires for fragmenting the instruction in IR register.
     wire [5:0] opcode,func;
@@ -56,9 +61,7 @@ module instr_decode (
     // Whenever the values under ir are changed this module will be signalled and the always block will execute.
     // ID gets the particular instruction ID and parameter outputs are set as explained above.
     always @(*) begin
-        if(reset == 1'b1) begin
-            id_reg <= 32'b0; rs_reg <= 32'b0; rt_reg <= 32'b0; rd_reg <= 32'b0;
-        end
+        if(reset == 1'b1 || ir == 32'b0) begin id_reg <= 32'b0; end
         else if(opcode == 6'd0) begin
             id_reg <= {27'b0,{func+5'd1}};
             rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
@@ -74,17 +77,14 @@ module instr_decode (
         end
         else if(opcode == 6'd7) begin
             id_reg <= {27'b0,{func+5'd11}};
-            rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
+            rs_reg <= {27'b0,ir[20:16]}; rt_reg <= {27'b0,ir[10:6]}; rd_reg <= {27'b0,ir[15:11]};
         end
         else begin
             id_reg <= {27'b0,{opcode+5'd5}};
-            if(opcode == 11 || opcode == 12) begin
-                rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
-            end
-            else if(opcode < 16 || opcode == 20) begin
+            if(opcode < 16 || opcode == 20) begin
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {{16{ir[15]}},ir[15:0]}; rd_reg <= {27'b0,ir[20:16]};
             end
-            else if(opcode < 19) begin rs_reg <= {6'b0,ir[25:0]}; end
+            else if(opcode < 19 || opcode == 26) begin rs_reg <= {6'b0,ir[25:0]}; end
             else begin
                 rs_reg <= {27'b0,ir[25:21]}; rt_reg <= {27'b0,ir[20:16]}; rd_reg <= {27'b0,ir[15:11]};
             end

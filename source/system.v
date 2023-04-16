@@ -16,14 +16,14 @@
 
 /// This is a combinational logic.
 module system_top (
-    input wire reset,
+    input wire clk,reset,
     input wire [31:0] ir,                   // Instruction Register
     input wire [31:0] instr_ID,             // Decoded instruction ID
-    input wire [31:0] rs,rt1,rt2,rt3,rt4    // 5 input parameters to the system module from processor
+    input wire [31:0] rs,rt1,rt2,rt3,rt4,   // 5 input parameters to the system module from processor
     output wire [31:0] rd                   // 1 output parameter from system module to processor
 );
 
-    always @(*) begin
+    always @(posedge clk) begin
         if(instr_ID != 26) begin end            // Ignore for instructions which are not syscall
         else begin
             if(rs == 32'd1) begin               // The instruction is for displaying signed integer
@@ -38,19 +38,13 @@ module system_top (
                 $display("%s",rt1);
             end
             else if(rs == 32'd5) begin          // The instruction is for displaying 8 char string
-                $display("%s",rt1);
-                $display("%s",rt2);
+                $display("%s%s",rt1,rt2);
             end
             else if(rs == 32'd6) begin          // The instruction is for displaying 12 char string
-                $display("%s",rt1);
-                $display("%s",rt2);
-                $display("%s",rt3);
+                $display("%s%s%s",rt1,rt2,rt3);
             end
             else if(rs == 32'd7) begin          // The instruction is for displaying 16 char string
-                $display("%s",rt1);
-                $display("%s",rt2);
-                $display("%s",rt3);
-                $display("%s",rt4);
+                $display("%s%s%s%s",rt1,rt2,rt3,rt4);
             end
             else if(rs == 32'd8) begin          // The instruction is for displaying unsigned integer
                 $display("%d",rt1);

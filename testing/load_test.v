@@ -8,7 +8,7 @@ module load_test();
     reg clk,reset,mode,write;
 
     // Change as per the program to be tested
-    veda #(.width(32),.depth(32),.len(32)) uut(clk,reset,a,out,mode,b,c,write);
+    veda_instruction #(.width(32),.depth(32),.len(32)) uut(clk,reset,a,out,mode,b,c,write);
 
     initial begin  
         #10

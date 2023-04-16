@@ -21,9 +21,9 @@ module processor_test();
     // Control the reset signal for a small amount of time to start the machine
     initial begin
         reset <= 1'b0;
-        #2
+        #1
         reset <= 1'b1;
-        #2
+        #1
         reset <= 1'b0;
     end
 

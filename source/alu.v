@@ -25,8 +25,8 @@ module alu_top (
     input wire reset,
     input wire [31:0] ir,                    // Instruction Register
     input wire [31:0] instr_ID,              // Decoded instruction ID
-    input wire [31:0] rs,rt,                 // Input Arguments 1 and 2 got from processor
-    output wire [31:0] rd                    // Output Argument 3 sent to processor
+    input wire signed [31:0] rs,rt,          // Input Arguments 1 and 2 got from processor
+    output wire signed [31:0] rd             // Output Argument 3 sent to processor
 );
 
     // Register to update the output of ALU
@@ -49,20 +49,16 @@ module alu_top (
     srl alu11(rs,rt,opt[11]);
     slt alu12(rs,rt,opt[12]);
     slti alu13(rs,rt,opt[13]);
-
-    wire [31:0] p,q;
-    assign p = instr_ID - 32'd1;
-    assign q = instr_ID - 32'd12;
     
     // Combinational Always block to select the correct output from the above outputs. 
     always @(*) begin
         if(reset == 1'b1) begin rd_reg <= 32'b0; end
         else if(instr_ID == 0) begin end                         // No instruction fetched till now
         else if(instr_ID < 13) begin                             // Presence of an Airthmetic or Logical instruction
-            rd_reg <= opt[p];
+            rd_reg <= opt[instr_ID - 32'd1];
         end
         else if(instr_ID == 24 || instr_ID == 25) begin          // Presence of a Comparison instruction
-            rd_reg <= opt[q];
+            rd_reg <= opt[instr_ID - 32'd12];
         end
         else begin end                                           // Ignore this if it is not an ALU or comparison instruction
     end
@@ -194,9 +190,10 @@ module slt (
     input wire signed [31:0] rs,rt,
     output wire signed [31:0] rd
 );
-    wire chk;
-    assign chk = (rs < rt) ? 1'b1 : 1'b0;
-    assign rd = {31'b0,chk};
+    wire o1,o2,o3;
+    comparator p1(rs,rt,o1,o2,o3);
+    
+    assign rd = (o3 == 1'b1) ? 32'b1 : 32'b0;
 endmodule
 
 // Module for supporting Set if Less than immediate operation
@@ -205,7 +202,8 @@ module slti (
     input wire signed [31:0] rs,rt,
     output wire signed [31:0] rd
 );
-    wire chk;
-    assign chk = (rs < rt) ? 1'b1 : 1'b0;
-    assign rd = {31'b0,chk};
+    wire o1,o2,o3;
+    comparator p2(rs,rt,o1,o2,o3);
+    
+    assign rd = (o3 == 1'b1) ? 32'b1 : 32'b0;
 endmodule
